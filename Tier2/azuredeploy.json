@@ -4,20 +4,23 @@
     "parameters": {
         "serverName": {
             "type": "string",
+            "defaultValue": "srvdb1",
             "metadata": {
-                "description": "The SQL Server name."
+                "description": "Specify the server name."
             }
         },
         "administratorLogin": {
             "type": "string",
+            "defaultValue": "denis",
             "metadata": {
-                "description": "The SQL Server administrator login"
+                "description": "specify admin login"
             }
         },
         "administratorLoginPassword": {
             "type": "string",
+            "defaultValue": "SurfacePro-4",
             "metadata": {
-                "description": "The SQL Server administrator login password."
+                "description": "specify admin pwd"
             }
         }
     },
@@ -26,8 +29,8 @@
     "resources": [
         {
             "type": "Microsoft.Sql/servers",
-            "apiVersion": "2020-02-02-preview",
             "name": "[parameters('serverName')]",
+            "apiVersion": "2020-02-02-preview",
             "location": "[resourceGroup().location]",
             "properties": {
                 "administratorLogin": "[parameters('administratorLogin')]",
