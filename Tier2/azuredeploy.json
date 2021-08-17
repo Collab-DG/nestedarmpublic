@@ -7,32 +7,32 @@
             "metadata": {
                 "description": "The SQL Server name."
             }
-            },
-            "administratorLogin": {
-                "type": "string",
-                "metadata": {
-                    "description": "The SQL Server administrator login"
-                }
-            },
-            "administratorLoginPassword": {
-                "type": "string",
-                "metadata": {
-                    "description": "The SQL Server administrator login password."
-                }
+        },
+        "administratorLogin": {
+            "type": "string",
+            "metadata": {
+                "description": "The SQL Server administrator login"
             }
         },
-        "variables": {
-        },
-        "resources": [
-            {
-                "type": "Microsoft.Sql/servers",
-                "apiVersion": "2020-02-02-preview",
-                "name": "[parameters('serverName')]",
-                "location": "[resourceGroup().location]",
-                "properties": {
-                    "administratorLogin": "[parameters('administratorLogin')]",
-                    "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
-                }
+        "administratorLoginPassword": {
+            "type": "string",
+            "metadata": {
+                "description": "The SQL Server administrator login password."
             }
-        ]
-    }
+        }
+    },
+    "variables": {
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Sql/servers",
+            "apiVersion": "2020-02-02-preview",
+            "name": "[parameters('serverName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "administratorLogin": "[parameters('administratorLogin')]",
+                "administratorLoginPassword": "[parameters('administratorLoginPassword')]"
+            }
+        }
+    ]
+}
