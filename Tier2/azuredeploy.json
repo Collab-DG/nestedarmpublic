@@ -10,14 +10,14 @@
             }
         },
         "administratorLogin": {
-            "type": "string",
+            "type": "securestring",
             "defaultValue": "denis",
             "metadata": {
                 "description": "specify admin login"
             }
         },
         "administratorLoginPassword": {
-            "type": "string",
+            "type": "securestring",
             "defaultValue": "SurfacePro-4",
             "metadata": {
                 "description": "specify admin pwd"
