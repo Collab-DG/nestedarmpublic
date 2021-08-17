@@ -28,9 +28,9 @@
     },
     "resources": [
         {
+            "apiVersion": "2020-02-02-preview",
             "type": "Microsoft.Sql/servers",
             "name": "[parameters('serverName')]",
-            "apiVersion": "2020-02-02-preview",
             "location": "[resourceGroup().location]",
             "properties": {
                 "administratorLogin": "[parameters('administratorLogin')]",
