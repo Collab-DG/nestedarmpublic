@@ -10,7 +10,7 @@
             }
         },
         "administratorLogin": {
-            "type": "securestring",
+            "type": "string",
             "defaultValue": "denis",
             "metadata": {
                 "description": "specify admin login"
