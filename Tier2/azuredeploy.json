@@ -15,7 +15,7 @@
                 }
             },
             "administratorLoginPassword": {
-                "type": "securestring",
+                "type": "string",
                 "metadata": {
                     "description": "The SQL Server administrator login password."
                 }
