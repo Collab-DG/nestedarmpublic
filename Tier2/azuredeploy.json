@@ -22,6 +22,13 @@
             "metadata": {
                 "description": "specify admin pwd"
             }
+        },
+                "location": {
+            "type": "string",
+            "defaultValue": "eastus2",
+            "metadata": {
+                "description": "specify admin pwd"
+            }
         }
     },
 
@@ -32,7 +39,7 @@
             "apiVersion": "2020-02-02-preview",
             "type": "Microsoft.Sql/servers",
             "name": "[parameters('serverName')]",
-            "location": "east us 2",
+            "location": "East US 2",
             "properties": {
                 "administratorLogin": "[parameters('administratorLogin')]",
                 "administratorLoginPassword": "[parameters('administratorLoginPassword')]"
