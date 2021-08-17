@@ -38,7 +38,7 @@
             "apiVersion": "2020-02-02-preview",
             "type": "Microsoft.Sql/servers",
             "name": "[parameters('serverName')]",
-            "location": "eastus2",
+            "location": "east us 2",
             "properties": {
                 "administratorLogin": "[parameters('administratorLogin')]",
                 "administratorLoginPassword": "[parameters('administratorLoginPassword')]"
