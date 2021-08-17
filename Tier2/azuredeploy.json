@@ -27,7 +27,7 @@
             "type": "string",
             "defaultValue": "eastus2",
             "metadata": {
-                "description": "specify admin pwd"
+                "description": "specify location"
             }
         }
     },
