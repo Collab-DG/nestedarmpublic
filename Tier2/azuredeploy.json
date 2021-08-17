@@ -23,7 +23,7 @@
                 "description": "specify admin pwd"
             }
         }
-        },
+    },
 
     "variables": {
     },
