@@ -25,13 +25,14 @@
         }
     },
     "variables": {
+        "location": "[resourceGroup().location]"
     },
     "resources": [
         {
             "apiVersion": "2020-02-02-preview",
             "type": "Microsoft.Sql/servers",
             "name": "[parameters('serverName')]",
-            "location": "[resourceGroup().location]",
+            "location": "[variables('location')]",
             "properties": {
                 "administratorLogin": "[parameters('administratorLogin')]",
                 "administratorLoginPassword": "[parameters('administratorLoginPassword')]"
