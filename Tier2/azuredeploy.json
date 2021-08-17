@@ -32,7 +32,6 @@
                 "properties": {
                     "administratorLogin": "[parameters('administratorLogin')]",
                     "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
-                    "version": "12.0"
                 }
             }
         ]
