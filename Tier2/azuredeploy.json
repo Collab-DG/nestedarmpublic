@@ -22,13 +22,6 @@
             "metadata": {
                 "description": "specify admin pwd"
             }
-        },
-        "location": {
-            "type": "string",
-            "defaultValue": "[resourceGroup().location]",
-            "metadata": {
-                "description": "Enter location. If you leave this field blank resource group location would be used."
-            }
         }
     },
     "variables": {
@@ -38,7 +31,7 @@
             "apiVersion": "2020-02-02-preview",
             "type": "Microsoft.Sql/servers",
             "name": "[parameters('serverName')]",
-            "location": "[parameters('location')]",
+            "location": "[resourceGroup().location]",
             "properties": {
                 "administratorLogin": "[parameters('administratorLogin')]",
                 "administratorLoginPassword": "[parameters('administratorLoginPassword')]"
