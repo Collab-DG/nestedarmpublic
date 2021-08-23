@@ -140,7 +140,7 @@
         "count": "[parameters('vmCount')]"
       },
       "name": "[concat(parameters('dnsLabelPrefix'), copyIndex(1))]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('dnsLabelPrefix'), copyIndex(1), variables('nicname')))]"
       ],
@@ -208,7 +208,7 @@
       },
       "name": "[concat(parameters('dnsLabelPrefix'), copyIndex(1), '/BGInfo')]",
       "condition": "[contains(tolower(parameters('imageReference').OfferName), 'windows')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Compute/virtualMachines/', concat(parameters('dnsLabelPrefix'), copyIndex(1)))]"
       ],
@@ -231,7 +231,7 @@
       },
       "name": "[concat(parameters('dnsLabelPrefix'), copyIndex(1), '/IaaSAntimalware')]",
       "condition": "[contains(tolower(parameters('imageReference').OfferName), 'windows')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/',parameters('dnsLabelPrefix'), copyIndex(1), '/extensions/BGInfo')]"
       ],
@@ -266,7 +266,7 @@
         "count": "[parameters('vmCount')]"
       },
       "name": "[concat(parameters('dnsLabelPrefix'),copyIndex(1),'/joindomain')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [ "[concat('Microsoft.Compute/virtualMachines/', concat(parameters('dnsLabelPrefix'),copyIndex(1)))]" ],
       "properties": {
         "publisher": "Microsoft.Compute",
@@ -293,7 +293,7 @@
         "count": "[parameters('vmCount')]"
       },
       "name": "[concat(parameters('dnsLabelPrefix'), copyIndex(1),'/diskEncryption')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/',parameters('dnsLabelPrefix'), copyIndex(1), '/extensions/IaaSAntimalware')]"
       ],
