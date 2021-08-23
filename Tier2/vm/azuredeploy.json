@@ -80,7 +80,7 @@
         "description": "Pwd to join for the Virtual Machine."
       }
     },
-    "AdName": {
+    "adName": {
       "type": "securestring",
       "metadata": {
         "description": "Domain name to join for the Virtual Machine."
