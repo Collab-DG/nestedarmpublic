@@ -91,6 +91,12 @@
       "metadata": {
         "description": "Azure Key Vault Name"
       }
+    },
+    "adOuPath": {
+      "type": "string",
+      "metadata": {
+        "description": "Where to store vm in OU"
+      }
     }
   },
   "variables": {
@@ -100,9 +106,7 @@
     "subnetId": "[concat('/subscriptions/', subscription().subscriptionid, '/resourceGroups/', parameters('vnet').rg, '/providers/Microsoft.Network/virtualNetworks/', parameters('vnet').name, '/subnets/', parameters('vnet').subnet)]",
 
     "KeyVaultURL": "[concat('https://', parameters('akv').name, '.vault.azure.net/')]",
-    "KeyVaultResourceID": "[concat(subscription().id,'/resourceGroups/',parameters('akv').rg,'/providers/Microsoft.KeyVault/vaults/', parameters('akv').name)]",
-
-    "ouPath": "OU=AZURE,OU=Member Servers,DC=Investquebec,DC=com"
+    "KeyVaultResourceID": "[concat(subscription().id,'/resourceGroups/',parameters('akv').rg,'/providers/Microsoft.KeyVault/vaults/', parameters('akv').name)]"
   },
   "resources": [
     {
@@ -273,7 +277,7 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "Name": "[parameters('AdName')]",
-          "OUPath": "[variables('ouPath')]",
+          "OUPath": "[parameters('adOuPath')]",
           "User": "[concat(parameters('admAdUsr'), '@', parameters('AdName'))]",
           "Restart": true,
           "Options": 3
