@@ -86,12 +86,6 @@
         "description": "Domain name to join for the Virtual Machine."
       }
     },
-    "adOuPath": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Active Directory OU Path to put vm"
-      }
-    },
     "akv": {
       "type": "object",
       "metadata": {
@@ -100,11 +94,15 @@
     }
   },
   "variables": {
-    "nicname": "-nic01",
-    "subnetId": "[concat('/subscriptions/', subscription().subscriptionid, '/resourceGroups/', parameters('vnet').rg, '/providers/Microsoft.Network/virtualNetworks/', parameters('vnet').name, '/subnets/', parameters('vnet').subnet)]",
+        "nicname": "-nic01",
     "osdiskname": "-os-disk",
+
+    "subnetId": "[concat('/subscriptions/', subscription().subscriptionid, '/resourceGroups/', parameters('vnet').rg, '/providers/Microsoft.Network/virtualNetworks/', parameters('vnet').name, '/subnets/', parameters('vnet').subnet)]",
+
     "KeyVaultURL": "[concat('https://', parameters('akv').name, '.vault.azure.net/')]",
     "KeyVaultResourceID": "[concat(subscription().id,'/resourceGroups/',parameters('akv').rg,'/providers/Microsoft.KeyVault/vaults/', parameters('akv').name)]",
+
+    "ouPath": "OU=AZURE,OU=Member Servers,DC=Investquebec,DC=com"
   },
   "resources": [
     {
@@ -275,7 +273,7 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "Name": "[parameters('AdName')]",
-          "OUPath": "[parameters('adOuPath')]",
+          "OUPath": "[variables('ouPath')]",
           "User": "[concat(parameters('admAdUsr'), '@', parameters('AdName'))]",
           "Restart": true,
           "Options": 3
