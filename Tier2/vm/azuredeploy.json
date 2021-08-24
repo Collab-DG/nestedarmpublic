@@ -39,7 +39,7 @@
       }
     },
     "admUsr": {
-      "type": "securestring",
+      "type": "string",
       "metadata": {
         "description": "Specifies local vm login"
       }
@@ -81,7 +81,7 @@
       }
     },
     "adName": {
-      "type": "securestring",
+      "type": "string",
       "metadata": {
         "description": "Domain name to join for the Virtual Machine."
       }
