@@ -119,7 +119,7 @@
             "location": "[parameters('location')]",
             "name": "[parameters('sqlSrvName')]",
             "properties": {
-                "sqlAdmUsr": "[parameters('sqlAdmUsr')]",
+                "administratorLogin": "[parameters('sqlAdmUsr')]",
                 "sqlAdmPwd": "[parameters('sqlAdmPwd')]",
                 "version": "12.0"
             }
