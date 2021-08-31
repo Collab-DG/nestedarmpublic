@@ -120,7 +120,7 @@
             "name": "[parameters('sqlSrvName')]",
             "properties": {
                 "administratorLogin": "[parameters('sqlAdmUsr')]",
-                "sqlAdmPwd": "[parameters('sqlAdmPwd')]",
+                "administratorLoginPassword": "[parameters('sqlAdmPwd')]",
                 "version": "12.0"
             }
         },
