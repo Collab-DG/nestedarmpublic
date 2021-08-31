@@ -167,7 +167,7 @@
             "createOption": "FromImage"
           },
 
-          /*"copy": [
+          "copy": [
             {
               "name": "dataDisks",
               "count": "[length(parameters('dataDisksArray'))]",
@@ -179,7 +179,7 @@
                 "lun": "[parameters('dataDisksArray')[copyIndex('dataDisks')].datadisklun]"
               }
             }
-          ]*/
+          ]
 
           /*"dataDisks": [
             {
