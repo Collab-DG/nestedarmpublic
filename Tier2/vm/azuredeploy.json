@@ -59,7 +59,7 @@
     "dataDisksArray": {
       "type": "array",
       "metadata": {
-        "description": "Specifie number of data disk to install on the vm"
+        "description": "Specifie number of data disk and specs to install on the vm"
       }
     },
     "AdJoin": {
