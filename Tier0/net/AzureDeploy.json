@@ -17,6 +17,13 @@
                 "description": "VNet name"
             }
         },
+        "location": {
+            "type": "string",
+            "defaultValue": "Canada Central",
+            "metadata": {
+                "description": "Network resource location"
+            }
+        },
         "vnetAddressPrefix": {
             "type": "string",
             "defaultValue": "10.1.0.0/16",
@@ -34,12 +41,10 @@
         {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2019-11-01",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('location')]",
             "tags": "[parameters('AzureTags')]",
             "name": "[parameters('vnetName')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsg').name)]"
-            ],
+            "dependsOn": [],
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
