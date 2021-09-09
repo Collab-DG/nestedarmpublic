@@ -10,18 +10,18 @@
                 "Owner": ""
             }
         },
-        "vnetName": {
-            "type": "string",
-            "defaultValue": "VNet1",
-            "metadata": {
-                "description": "VNet name"
-            }
-        },
         "location": {
             "type": "string",
             "defaultValue": "Canada Central",
             "metadata": {
                 "description": "Network resource location"
+            }
+        },
+        "vnetName": {
+            "type": "string",
+            "defaultValue": "VNet1",
+            "metadata": {
+                "description": "VNet name"
             }
         },
         "vnetAddressPrefix": {
