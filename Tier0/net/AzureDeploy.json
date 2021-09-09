@@ -1,0 +1,72 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "AzureTags": {
+            "type": "object",
+            "defaultValue": {
+                "env": "Prod",
+                "App-Name": "",
+                "Owner": ""
+            }
+        },
+        "vnetName": {
+            "type": "string",
+            "defaultValue": "VNet1",
+            "metadata": {
+                "description": "VNet name"
+            }
+        },
+        "vnetAddressPrefix": {
+            "type": "string",
+            "defaultValue": "10.1.0.0/16",
+            "metadata": {
+                "description": "Address prefix"
+            }
+        },
+        "subnets": {
+            "type": "array"
+        }
+    },
+    "variables": {},
+    "resources": [
+
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2019-11-01",
+            "location": "[resourceGroup().location]",
+            "tags": "[parameters('AzureTags')]",
+            "name": "[parameters('vnetName')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsg').name)]"
+            ],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('vnetAddressPrefix')]"
+                    ]
+                },
+                "dhcpOptions": {
+                    "dnsServers": [
+                        "10.240.0.141",
+                        "10.240.0.142",
+                        "10.99.0.4",
+                        "10.99.0.11"
+                    ]
+                },
+                "copy": [
+                    {
+                        "name": "subnets",
+                        "count": "[length(parameters('subnets'))]",
+                        "input": {
+                            "name": "[parameters('subnets')[copyIndex('subnets')].name]",
+                            "properties": {
+                                "addressPrefix": "[parameters('subnets')[copyIndex('subnets')].addressPrefix]"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
