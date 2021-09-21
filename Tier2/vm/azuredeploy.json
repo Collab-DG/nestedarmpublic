@@ -152,8 +152,8 @@
         },
         "osProfile": {
           "computerName": "[concat(parameters('dnsLabelPrefix'), copyIndex(1))]",
-          "admUsr": "[parameters('admUsr')]",
-          "admPwd": "[parameters('admPwd')]"
+          "adminUsername": "[parameters('admUsr')]",
+          "adminPassword": "[parameters('admPwd')]"
         },
         "storageProfile": {
           "imageReference": {
