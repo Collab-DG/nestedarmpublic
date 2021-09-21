@@ -1,0 +1,326 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "AzureTags": {
+      "type": "object",
+      "metadata": {
+        "description": "list all tags for azure vm resource"
+      }
+    },
+    "vmCount": {
+      "type": "int",
+      "metadata": {
+        "description": "Specifies number of identical vm you want to provision"
+      }
+    },
+    "dnsLabelPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Specifies dns prefix for the vm"
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Specifies vm location"
+      }
+    },
+    "vnet": {
+      "type": "object",
+      "metadata": {
+        "description": "Specifies vnet info for the vm"
+      }
+    },
+    "vmSize": {
+      "type": "string",
+      "metadata": {
+        "description": "Specifies vm size"
+      }
+    },
+    "admUsr": {
+      "type": "string",
+      "metadata": {
+        "description": "Specifies local vm login"
+      }
+    },
+    "admPwd": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Specifies local vm pwd"
+      }
+    },
+    "imageReference": {
+      "type": "object",
+      "metadata": {
+        "description": "Specifie os to install on vm"
+      }
+    },
+    "dataDisksArray": {
+      "type": "array",
+      "metadata": {
+        "description": "Specifie number of data disk and specs to install on the vm"
+      }
+    },
+    "AdJoin": {
+      "type": "bool",
+      "metadata": {
+        "description": "Do you want this vm joined to ad domain ?"
+      }
+    },
+    "admAdUsr": {
+      "type": "string",
+      "metadata": {
+        "description": "Username to join vm to ad domain"
+      }
+    },
+    "admAdPwd": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Pwd to join for the Virtual Machine."
+      }
+    },
+    "adName": {
+      "type": "string",
+      "metadata": {
+        "description": "Domain name to join for the Virtual Machine."
+      }
+    },
+    "akv": {
+      "type": "object",
+      "metadata": {
+        "description": "Azure Key Vault Name"
+      }
+    },
+    "adOuPath": {
+      "type": "string",
+      "metadata": {
+        "description": "Where to store vm in OU"
+      }
+    }
+  },
+  "variables": {
+        "nicname": "-nic01",
+    "osdiskname": "-os-disk",
+
+    "subnetId": "[concat('/subscriptions/', subscription().subscriptionid, '/resourceGroups/', parameters('vnet').rg, '/providers/Microsoft.Network/virtualNetworks/', parameters('vnet').name, '/subnets/', parameters('vnet').subnet)]",
+
+    "KeyVaultURL": "[concat('https://', parameters('akv').name, '.vault.azure.net/')]",
+    "KeyVaultResourceID": "[concat(subscription().id,'/resourceGroups/',parameters('akv').rg,'/providers/Microsoft.KeyVault/vaults/', parameters('akv').name)]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2019-09-01",
+      "tags": "[parameters('AzureTags')]",
+      "copy": {
+        "count": "[parameters('vmCount')]",
+        "name": "nicCopy"
+      },
+      "name": "[concat(parameters('dnsLabelPrefix'), copyIndex(1), variables('nicname'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "[concat('ipconfig',copyIndex(1))]",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('subnetId')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2019-07-01",
+      "tags": "[parameters('AzureTags')]",
+      "copy": {
+        "name": "nodeCopy",
+        "count": "[parameters('vmCount')]"
+      },
+      "name": "[concat(parameters('dnsLabelPrefix'), copyIndex(1))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('dnsLabelPrefix'), copyIndex(1), variables('nicname')))]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[concat(parameters('dnsLabelPrefix'), copyIndex(1))]",
+          "adminUsername": "[parameters('admUsr')]",
+          "adminPassword": "[parameters('admPwd')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[parameters('imageReference').PublisherName]",
+            "offer": "[parameters('imageReference').OfferName]",
+            "sku": "[parameters('imageReference').SkuName]",
+            "version": "[parameters('imageReference').Version]"
+          },
+          "osDisk": {
+            "name": "[concat(parameters('dnsLabelPrefix'), copyIndex(1), variables('osdiskname'))]",
+            "createOption": "FromImage"
+          },
+
+          "copy": [
+            {
+              "name": "dataDisks",
+              "count": "[length(parameters('dataDisksArray'))]",
+              "input": {
+                "name": "[concat(parameters('dnsLabelPrefix'), copyIndex(1), parameters('dataDisksArray')[CopyIndex('dataDisks')].datadiskname)]",
+                "caching": "ReadWrite",
+                "createOption": "Empty",
+                "diskSizeGB": "[parameters('dataDisksArray')[copyIndex('dataDisks')].datadisksize]",
+                "lun": "[parameters('dataDisksArray')[copyIndex('dataDisks')].datadisklun]"
+              }
+            }
+          ]
+
+          /*"dataDisks": [
+            {
+              "name": "[concat(parameters('dnsLabelPrefix'), copyIndex(1), parameters('disk').datadiskname)]",
+              "caching": "ReadWrite",
+              "createOption": "Empty",
+              "diskSizeGB": "[parameters('disk').datadisksize]",
+              "lun": "[parameters('disk').datadisklun]"
+            }
+          ]*/
+
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('dnsLabelPrefix'), copyIndex(1), variables('nicname')))]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "apiVersion": "2015-06-15",
+      "copy": {
+        "name": "nodeCopy",
+        "count": "[parameters('vmCount')]"
+      },
+      "name": "[concat(parameters('dnsLabelPrefix'), copyIndex(1), '/BGInfo')]",
+      "condition": "[contains(tolower(parameters('imageReference').OfferName), 'windows')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines/', concat(parameters('dnsLabelPrefix'), copyIndex(1)))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Compute",
+        "type": "BGInfo",
+        "typeHandlerVersion": "2.1",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "properties": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "apiVersion": "2019-03-01",
+      "copy": {
+        "name": "nodeCopy",
+        "count": "[parameters('vmCount')]"
+      },
+      "name": "[concat(parameters('dnsLabelPrefix'), copyIndex(1), '/IaaSAntimalware')]",
+      "condition": "[contains(tolower(parameters('imageReference').OfferName), 'windows')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/',parameters('dnsLabelPrefix'), copyIndex(1), '/extensions/BGInfo')]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Azure.Security",
+        "type": "IaaSAntimalware",
+        "typeHandlerVersion": "1.5",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "AntimalwareEnabled": true,
+          "Exclusions": {
+            "Paths": "",
+            "Extensions": "",
+            "Processes": ""
+          },
+          "RealtimeProtectionEnabled": "true",
+          "ScheduledScanSettings": {
+            "isEnabled": "true",
+            "scanType": "Full",
+            "day": "7",
+            "time": "120"
+          }
+        }
+      }
+    },
+    {
+      "condition": "[parameters('AdJoin')]",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "apiVersion": "2015-06-15",
+      "copy": {
+        "name": "DomainJoinCopy",
+        "count": "[parameters('vmCount')]"
+      },
+      "name": "[concat(parameters('dnsLabelPrefix'),copyIndex(1),'/joindomain')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [ "[concat('Microsoft.Compute/virtualMachines/', concat(parameters('dnsLabelPrefix'),copyIndex(1)))]" ],
+      "properties": {
+        "publisher": "Microsoft.Compute",
+        "type": "JsonADDomainExtension",
+        "typeHandlerVersion": "1.3",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "Name": "[parameters('AdName')]",
+          "OUPath": "[parameters('adOuPath')]",
+          "User": "[concat(parameters('admAdUsr'), '@', parameters('AdName'))]",
+          "Restart": true,
+          "Options": 3
+        },
+        "protectedSettings": {
+          "Password": "[parameters('admAdPwd')]"
+        }
+      }
+    },
+    {
+      "condition": "[contains(tolower(parameters('imageReference').OfferName), 'windows')]",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "apiVersion": "2019-03-01",
+      "copy": {
+        "name": "nodeCopy",
+        "count": "[parameters('vmCount')]"
+      },
+      "name": "[concat(parameters('dnsLabelPrefix'), copyIndex(1),'/diskEncryption')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/',parameters('dnsLabelPrefix'), copyIndex(1), '/extensions/IaaSAntimalware')]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Azure.Security",
+        "type": "AzureDiskEncryption",
+        "typeHandlerVersion": "2.2",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "EncryptionOperation": "EnableEncryption",
+          "KeyVaultURL": "[variables('KeyVaultURL')]",
+          "KeyVaultResourceId": "[variables('KeyVaultResourceId')]",
+
+
+          "VolumeType": "OS" /*,
+            
+            "KeyEncryptionKeyURL": "[variables('KeyEncryptionKeyURL')]",
+
+            "KeyEncryptionAlgorithm": "RSA-OAEP",
+            "KeyEncryptionKeyURL": "[variables('KeyEncryptionKeyURL')]",
+            "KekVaultResourceId": "[variables('KeyVaultResourceId')]",
+            "ResizeOSDisk": false*/
+        }
+      }
+    }
+  ]
+}
