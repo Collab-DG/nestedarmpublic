@@ -288,6 +288,7 @@
       }
     },
     {
+      "condition": "[contains(tolower(parameters('imageReference').OfferName), 'windows')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "apiVersion": "2019-03-01",
       "copy": {
